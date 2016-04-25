@@ -34,6 +34,7 @@
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Display.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Object2D.cpp" />
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="Vector2.cpp" />
   </ItemGroup>

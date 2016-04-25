@@ -21,7 +21,7 @@ class CollisionData
 		};
 	public:
 		Circle c;
-		AAB    abb;
+		AAB    aabb;
 		OOBB   oobb;
 
 		inline void GenerateDataFormTriangle(Triangle &tri, int fixup = 0)
@@ -50,8 +50,8 @@ class CollisionData
 			
 			Vector2 UpperRight(minX - fixup, minY - fixup);
 			Vector2 LowerLeft(maxX + fixup,maxY + fixup);
-			abb.center = tri.center;
-			abb.Halfbounds = (LowerLeft - UpperRight)/2;
+			aabb.center = tri.center;
+			aabb.Halfbounds = (LowerLeft - UpperRight)/2;
 
 		};
 };

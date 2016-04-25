@@ -15,7 +15,7 @@ Core::~Core()
 
 void Core::Init()
 {
-	context.antialiasingLevel = 0;
+	context.antialiasingLevel = 8;
 	window = new sf::RenderWindow(sf::VideoMode(700, 700), "Collision Detection", sf::Style::Default, context);
 	window->setVerticalSyncEnabled(false);
 
@@ -70,7 +70,8 @@ void Core::Run()
 		sim->Update(delta.asSeconds(),mousePosition);
 
 		disp->UpdateDynamicObjects(sim->get2DObjects());
-		disp->Render();
+		disp->SetFpsCounter(std::to_string(delta.asSeconds()));
+		disp->Render(sim->GetCollisionIndices());
 		step = false;
 
 		window->display();

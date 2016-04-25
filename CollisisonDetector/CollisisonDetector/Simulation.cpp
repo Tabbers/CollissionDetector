@@ -4,7 +4,6 @@
 #include "Object2D.h"
 #include "Randomizer.h"
 
-
 Simulation::Simulation()
 {
 }
@@ -18,6 +17,7 @@ void Simulation::Init(Vector2 Simulationbounds)
 {
 	m_SimulationBounds = Simulationbounds;
 	m_objs = new Object2D[NumberOfTriangles];
+	unsigned int UniformBounds = (NumberOfTriangles-11) / 10;
 
 	for (unsigned int i = 0; i < NumberOfTriangles; ++i)
 	{
@@ -33,6 +33,21 @@ void Simulation::Init(Vector2 Simulationbounds)
 	Vector2 speed;
 	Vector2 paddingXY((m_SimulationBounds / 10).x, (m_SimulationBounds / 10).y);
 	
+	unsigned int stepx = Simulationbounds.x / 10;
+	unsigned int stepy = Simulationbounds.y / 10;
+	int index;
+
+	for (unsigned int y = 0; y < UniformBounds; ++y)
+	{
+		for (unsigned int x = 0; x < UniformBounds; ++x)
+		{
+			index = x + UniformBounds * y;
+
+			pos.x = x*stepx + (stepx / 2) + m_objs[index].GetTriangle().center.x;
+			pos.y = y*stepy + (stepy / 2) + m_objs[index].GetTriangle().center.y;
+			m_objs[index].SetPosition(pos);
+		}
+	}
 	for (unsigned int i = 100; i < (NumberOfTriangles-1); ++i)
 	{
 		pos.x = Randomizer::GetRandom(0.f + paddingXY.x, m_SimulationBounds.x - paddingXY.x);
@@ -44,7 +59,15 @@ void Simulation::Init(Vector2 Simulationbounds)
 		m_objs[i].SetPosition(pos);
 		m_objs[i].SetSpeed(speed);
 	}
+	//CollisionDataPatchUp
+	for (unsigned int i = 0; i < NumberOfTriangles; ++i)
+	{
+		m_objs[i].PathCollisionCenter();
+	}
+	
 
+
+	m_coldetect = new CollisionDetector(100, 10, 1);
 }
 
 void Simulation::Update(float deltatime, Vector2 mousePos)
@@ -69,8 +92,11 @@ void Simulation::Update(float deltatime, Vector2 mousePos)
 			pos.y = m_SimulationBounds.y - 0.5;
 
 		m_objs[i].SetPosition(pos);
+		m_objs[i].PathCollisionCenter();
 	}
 	pos = mousePos;
 	pos = pos - m_objs[110].GetTriangle().center;
 	m_objs[110].SetPosition(pos);
+
+	m_coldetect->CheckForCollisions(m_objs);
 }
