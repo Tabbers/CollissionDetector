@@ -81,20 +81,24 @@ public:
 	 Vector2 operator*(const Vector2 &rhs);
 	 Vector2 operator/(const float &rhs);
 	 bool operator==(const Vector2 &rhs);
+	 bool operator>(const Vector2 &rhs);
+	 bool operator<(const Vector2 &rhs);
 	 Vector2 invert();
 	 Vector2 rotate90();
 	 Vector2 rotateAroundPoint(Vector2 pivot, float angle);
 	 Vector2 rotate(float);
 	 Vector2 Normalize();
 	 float Length();
-	 float GetAngle();
+	 float SqrLength();
+	 float GetAngleRad();
+	 float GetAngleDeg();
 	 float dot(const Vector2& rhs);
 	 sf::Vector2f toVector2f();
 	 sf::Vector2i toVector2i();
 	 sf::Vector2u toVector2u();
 public:
 	float x=0;
-	float y=0;
+	float y = 0;
 	const float PI = 3.1415927410125732421875f;
 	const float EPSILON = 0.00001;
 };

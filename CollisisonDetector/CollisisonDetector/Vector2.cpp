@@ -73,6 +73,16 @@ bool Vector2::operator==(const Vector2 & rhs)
 	return rhs.x==this->x && rhs.y==this->y;
 }
 
+bool Vector2::operator>(const Vector2 & rhs)
+{
+	return (rhs.x > this->x) && (rhs.y > this->y);
+}
+
+bool Vector2::operator<(const Vector2 & rhs)
+{
+		return (rhs.x < this->x) && (rhs.y < this->y);
+}
+
 Vector2 Vector2::invert()
 {
 	Vector2 temp;
@@ -86,7 +96,7 @@ Vector2 Vector2::rotate(float angle)
 	Vector2 temp;
 
 	float theta = angle*PI/180;
-	float l = this->GetAngle();
+	float l = this->GetAngleRad();
 	float length = this->Length();
 
 	temp.x = cos(theta + l)*length;
@@ -112,12 +122,22 @@ float Vector2::Length()
 	return result;
 }
 
-float Vector2::GetAngle()
+float Vector2::SqrLength()
+{
+	float result = pow(this->x, 2) + pow(this->y, 2);
+	return result;
+}
+
+float Vector2::GetAngleRad()
 {
 	float temp=atan2f(y,x);
 	return temp;
 }
 
+float Vector2::GetAngleDeg()
+{
+	return (GetAngleRad() * 180) / PI;
+}
 float Vector2::dot(const Vector2& rhs)
 {
 	return this->x*rhs.y+this->y*rhs.x;

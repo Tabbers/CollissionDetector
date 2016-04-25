@@ -1,7 +1,6 @@
 #include "Object2D.h"
 
-void Object2D::PathCollisionCenter()
+void Object2D::PatchCollisionCenter()
 {
 	m_colData.c.center = m_position;
-	m_colData.aabb.center = m_position;
 }

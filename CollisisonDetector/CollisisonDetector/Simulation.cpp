@@ -23,9 +23,7 @@ void Simulation::Init(Vector2 Simulationbounds)
 	{
 		Triangle tri;
 		CollisionData col;
-		float rotation = Randomizer::GetRandom(0.f, 360.0f);
 		tri.Generate(20, 20);
-		tri.Rotate(rotation);
 		col.GenerateDataFormTriangle(tri);
 		m_objs[i].SetObject2D(tri, col);
 	}
@@ -62,10 +60,8 @@ void Simulation::Init(Vector2 Simulationbounds)
 	//CollisionDataPatchUp
 	for (unsigned int i = 0; i < NumberOfTriangles; ++i)
 	{
-		m_objs[i].PathCollisionCenter();
+		m_objs[i].PatchCollisionCenter();
 	}
-	
-
 
 	m_coldetect = new CollisionDetector(100, 10, 1);
 }
@@ -92,11 +88,12 @@ void Simulation::Update(float deltatime, Vector2 mousePos)
 			pos.y = m_SimulationBounds.y - 0.5;
 
 		m_objs[i].SetPosition(pos);
-		m_objs[i].PathCollisionCenter();
+		m_objs[i].PatchCollisionCenter();
 	}
 	pos = mousePos;
 	pos = pos - m_objs[110].GetTriangle().center;
 	m_objs[110].SetPosition(pos);
+	m_objs[110].PatchCollisionCenter();
 
 	m_coldetect->CheckForCollisions(m_objs);
 }

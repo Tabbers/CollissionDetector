@@ -4,7 +4,7 @@
 
 Display::Display(sf::RenderWindow* window):window(window)
 {
-	font.loadFromFile("font/font.ttf");
+	font.loadFromFile("font/font.otf");
 	fps.setFont(font);
 
 	fps.setCharacterSize(24);
@@ -21,7 +21,8 @@ void Display::Init(unsigned int NumberOfTriangles, Object2D* objs)
 
 	m_triangles		  = new sf::ConvexShape[NumberOfTriangles];
 	m_boundingCircles = new sf::CircleShape[NumberOfTriangles];
-	m_aabs			  = new sf::RectangleShape[NumberOfTriangles];
+	m_aabbs			  = new sf::ConvexShape[NumberOfTriangles];
+	m_oobbs			  = new sf::ConvexShape[NumberOfTriangles];
 
 	m_NumberOfTriangles_static  = NumberOfTriangles - 11; 
 	m_NumberOfTriangles_dynamic = NumberOfTriangles - 100;
@@ -43,10 +44,32 @@ void Display::Init(unsigned int NumberOfTriangles, Object2D* objs)
 		m_boundingCircles[i].setFillColor(sf::Color::Transparent);
 		m_boundingCircles[i].setOutlineThickness(1);
 
-		m_aabs[i].setSize((objs[i].GetCollisionData().aabb.Halfbounds * 2).toVector2f());
-		m_aabs[i].setOutlineColor(sf::Color(255, 0, 0));
-		m_aabs[i].setFillColor(sf::Color::Transparent);
-		m_aabs[i].setOutlineThickness(1);
+		Vector2 ul = objs[i].GetCollisionData().aabb.ul;
+		Vector2 ur = {objs[i].GetCollisionData().aabb.dr.x,objs[i].GetCollisionData().aabb.ul.y };
+		Vector2 dr = objs[i].GetCollisionData().aabb.dr;
+		Vector2 dl = {objs[i].GetCollisionData().aabb.ul.x,objs[i].GetCollisionData().aabb.dr.y };;
+
+		m_aabbs[i].setPointCount(4);
+		  
+		m_aabbs[i].setPoint(0, ul.toVector2f());
+		m_aabbs[i].setPoint(1, ur.toVector2f());
+		m_aabbs[i].setPoint(2, dr.toVector2f());
+		m_aabbs[i].setPoint(3, dl.toVector2f());
+
+		m_aabbs[i].setOutlineColor(sf::Color(255, 0, 0));
+		m_aabbs[i].setFillColor(sf::Color::Transparent);
+		m_aabbs[i].setOutlineThickness(1);
+
+		m_oobbs[i].setPointCount(4);
+
+		m_oobbs[i].setPoint(0, objs[i].GetCollisionData().oobb.ul.toVector2f());
+		m_oobbs[i].setPoint(1, objs[i].GetCollisionData().oobb.ur.toVector2f());
+		m_oobbs[i].setPoint(2, objs[i].GetCollisionData().oobb.dr.toVector2f());
+		m_oobbs[i].setPoint(3, objs[i].GetCollisionData().oobb.dl.toVector2f());
+
+		m_oobbs[i].setOutlineColor(sf::Color(255, 0, 0));
+		m_oobbs[i].setFillColor(sf::Color::Transparent);
+		m_oobbs[i].setOutlineThickness(1);
 	}
 
 	Vector2 pos;
@@ -60,12 +83,17 @@ void Display::Init(unsigned int NumberOfTriangles, Object2D* objs)
 			m_triangles[i].setOutlineColor(sf::Color(0,255,0));
 		else 
 			m_triangles[i].setOutlineColor(sf::Color(0, 0, 255));
+
 		m_boundingCircles[i].setPosition(pos.toVector2f());
-		m_boundingCircles[i].setOrigin(objs[i].GetCollisionData().c.radius - objs[i].GetTriangle().center.x, objs[i].GetCollisionData().c.radius - objs[i].GetTriangle().center.y);
+		m_boundingCircles[i].setOrigin(objs[i].GetCollisionData().c.radius ,objs[i].GetCollisionData().c.radius);
 
-		m_aabs[i].setPosition(pos.toVector2f());
-		m_aabs[i].setOrigin(objs[i].GetCollisionData().aabb.Halfbounds.x - objs[i].GetTriangle().center.x, objs[i].GetCollisionData().aabb.Halfbounds.y - objs[i].GetTriangle().center.y);
+		m_aabbs[i].setPosition(pos.toVector2f());
 
+		m_oobbs[i].setPosition(pos.toVector2f());
+
+		m_oobbs[i].setOutlineColor(sf::Color(255, 0, 0));
+		m_oobbs[i].setFillColor(sf::Color::Transparent);
+		m_oobbs[i].setOutlineThickness(1);
 	}
 	m_triangles[110].setOutlineColor(sf::Color(255, 255, 0));
 }
@@ -77,7 +105,8 @@ void Display::UpdateDynamicObjects(Object2D* objs)
 		pos = objs[i].GetPosition();
 		m_triangles[i].setPosition(pos.toVector2f());
 		m_boundingCircles[i].setPosition(pos.toVector2f());
-		m_aabs[i].setPosition(pos.toVector2f());
+		m_aabbs[i].setPosition(pos.toVector2f());
+		m_oobbs[i].setPosition(pos.toVector2f());
 	}
 }
 
@@ -89,11 +118,18 @@ void Display::Render(CollisionDetector::CollidingObjects collidingObjects)
 	}
 	for (unsigned int i = 0; i < collidingObjects.aabbCollision.size(); ++i)
 	{
-		window->draw(m_aabs[collidingObjects.aabbCollision[i]]);
+		window->draw(m_aabbs[collidingObjects.aabbCollision[i]]);
+	}
+	for (unsigned int i = 0; i < collidingObjects.oobbCollision.size(); ++i)
+	{
+		window->draw(m_oobbs[collidingObjects.oobbCollision[i]]);
 	}
 	for (unsigned int i = 0; i < m_NumberOfTriangles_static+m_NumberOfTriangles_dynamic; ++i)
 	{
 		window->draw(m_triangles[i]);
+		//window->draw(m_aabbs[i]);
+		//window->draw(m_oobbs[i]);
+		//window->draw(m_boundingCircles[i]);
 	}
 	window->draw(fps);
 }

@@ -24,7 +24,7 @@ public:
 	inline Triangle GetTriangle() { return m_triangle; }
 	inline CollisionData GetCollisionData() { return m_colData; }
 
-	void PathCollisionCenter();
+	void PatchCollisionCenter();
 private:
 	Vector2 m_position;
 	Vector2 m_speed;

@@ -28,23 +28,30 @@ struct Triangle
 		points[2].y = y2;
 
 		center = Vector2((points[0].x + points[1].x + points[2].x) / 3, (points[0].y + points[1].y + points[2].y) / 3);
+	
+		points[0] = points[0] - center;
+		points[1] = points[1] - center;
+		points[2] = points[2] - center;
+
+		center.x = 0;
+		center.y = 0;
 	};
 	inline void Rotate(float angle)
 	{
 		for (unsigned int i = 0; i < 3; ++i)
 		{
-			points[i].rotateAroundPoint(center,angle);
+			points[i].rotate(angle);
 		}
 	}
 	float GetMaxDistance()
 	{
-		float maxDistance = (points[0] - center).Length();
+		float maxDistance = (points[0] - center).SqrLength();
 		float distance;
 		for (unsigned int i = 1; i < 3; ++i)
 		{
-			distance = (points[i] - center).Length();
+			distance = (points[i] - center).SqrLength();
 			if (distance > maxDistance) maxDistance = distance;
 		}
-		return maxDistance;
+		return sqrt(maxDistance);
 	}
 };

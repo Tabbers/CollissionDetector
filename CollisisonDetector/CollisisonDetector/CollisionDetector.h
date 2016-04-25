@@ -21,8 +21,15 @@ public:
 	inline CollidingObjects GetCollidingObjects() { return m_CollisionIndices; };
 private:
 
-	bool CircleCollision(CollisionData::Circle, CollisionData::Circle);
-	bool AABBCollision(CollisionData::AAB, CollisionData::AAB);
+	bool CircleCollision(CollisionData::Circle&, CollisionData::Circle&);
+	
+	//left|right|posl|posr
+	bool AABBCollision(CollisionData::AABB&, CollisionData::AABB&, Vector2,Vector2);
+
+	//left|right|posl|posr
+	bool OOBBCollision(CollisionData::OOBB&, CollisionData::OOBB&, Vector2, Vector2);
+
+	bool OOBCollisionSingleObject(CollisionData::OOBB&, CollisionData::OOBB&);
 
 	void CheckDynamicVsStatic(Object2D *);
 	void CheckDynamicVsDynamic(Object2D *);
