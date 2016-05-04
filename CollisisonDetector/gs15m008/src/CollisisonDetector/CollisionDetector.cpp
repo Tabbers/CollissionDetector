@@ -199,23 +199,15 @@ void CollisionDetector::CheckDynamicVsDynamic(Object2D *objs)
 			{
 				if (AABBCollision(objs[i].GetCollisionData().aabb, objs[j].GetCollisionData().aabb, objs[i].GetPosition(), objs[j].GetPosition()))
 				{
-					if (OOBBCollision(objs[i].GetCollisionData().oobb, objs[j].GetCollisionData().oobb, objs[i].GetPosition(), objs[j].GetPosition()))
+					if (MikowskiCollisison(objs[i].GetTriangle(), objs[j].GetTriangle(), objs[i].GetPosition(), objs[j].GetPosition()))
 					{
-						if (MikowskiCollisison(objs[i].GetTriangle(), objs[j].GetTriangle(), objs[i].GetPosition(), objs[j].GetPosition()))
-						{
-							m_CollisionIndices.MikowskiCollision.push_back(i);
-							m_CollisionIndices.MikowskiCollision.push_back(j);
-						}
-						else
-						{
-							m_CollisionIndices.oobbCollision.push_back(i);
-							m_CollisionIndices.oobbCollision.push_back(j);
-						}
+						m_CollisionIndices.MikowskiCollision.push_back(i);
+						m_CollisionIndices.MikowskiCollision.push_back(j);
 					}
 					else
 					{
-						m_CollisionIndices.aabbCollision.push_back(i);
-						m_CollisionIndices.aabbCollision.push_back(j);
+						m_CollisionIndices.oobbCollision.push_back(i);
+						m_CollisionIndices.oobbCollision.push_back(j);
 					}
 				}
 				else
